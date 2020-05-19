@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net45;netstandard2.0;netstandard2.1</TargetFrameworks>
+    <Authors>Pablo Caballero</Authors>
+    <Description>Friendly object builder pattern for testing in .NET</Description>
+    <PackageLicenseFile>License.txt</PackageLicenseFile>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <PackageProjectUrl>https://github.com/deidigitalis/AbstractBuilder</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/deidigitalis/AbstractBuilder</RepositoryUrl>
+    <RepositoryType>GIT</RepositoryType>
+    <Copyright>Copyright (c) 2020 Pablo Caballero</Copyright>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <FileVersion>1.0.0.0</FileVersion>
+    <Version>1.0.0</Version>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove=".editorconfig" />
+    <None Include="..\License.txt">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+  </ItemGroup>
+
+</Project>
