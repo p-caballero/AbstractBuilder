@@ -1,8 +1,10 @@
-name: .NET Core
+name: .NET Core CI
 
 on:
   push:
-    branches: [ master ]
+    branches:
+      - master
+      - bug/*
   pull_request:
     branches: [ master ]
   schedule:
