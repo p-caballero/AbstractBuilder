@@ -61,13 +61,13 @@ You just have to inherit from **AbstractBuilder** class where the generic type i
 Your builder needs a public constructor (in the example it is the default constructor) and it always needs a constructor with the seed (the visibility is not important).
 In this example we can set the property "*Name*" with the method `WithName`. We way of creating new methods that affects to the builder should be using always the method `Set`.
 
-## How can I use it? - Way 2: Using the abstract class itself
+## How can I use it? - Way 2: Using the abstract builder itself
 
 I don't want to be restrictive so you can use it directly. The problem is that you will have to declare everything and you will not reuse the builder.
 
 ```csharp
 
-    var builder = new AbstractClass<Person>()
+    var builder = new AbstractBuilder<Person>()
         .Set(x => x.Arms = 2)
         .Set(x => x.Legs = 2);
 
@@ -82,9 +82,9 @@ Yes, we can. We can call multiple times to the lambda action or surround with br
 
 ```csharp
 
-    var builder1 = new AbstractClass<Person>().Set(x => x.Arms = 2, x => x.Legs = 2)
+    var builder1 = new AbstractBuilder<Person>().Set(x => x.Arms = 2, x => x.Legs = 2)
 
-    var builder2 = new AbstractClass<Person>().Set(x => {
+    var builder2 = new AbstractBuilder<Person>().Set(x => {
         x.Arms = 2;
         x.Legs = 2;
     });
