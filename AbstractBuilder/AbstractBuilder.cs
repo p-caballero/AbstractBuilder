@@ -4,6 +4,8 @@ namespace AbstractBuilder
     using System.Collections.Generic;
     using System.Linq;
     using System.Reflection;
+    using System.Threading;
+    using System.Threading.Tasks;
 
     public class AbstractBuilder<TResult>
     {
@@ -54,6 +56,27 @@ namespace AbstractBuilder
             }
 
             return builder;
+        }
+
+        public virtual async Task<TResult> BuildAsync(CancellationToken? cancellationToken = null)
+        {
+            var currentCnclTkn = cancellationToken ?? CancellationToken.None;
+
+            TResult obj = await Task.Run(_seedFunc, currentCnclTkn);
+
+            foreach (Action<TResult> action in _modifications)
+            {
+                if (currentCnclTkn.IsCancellationRequested)
+                {
+                    break;
+                }
+
+                await Task.Run(() => action(obj), currentCnclTkn);
+            }
+
+            currentCnclTkn.ThrowIfCancellationRequested();
+
+            return obj;
         }
 
         /// <summary>
