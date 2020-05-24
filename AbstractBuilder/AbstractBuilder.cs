@@ -58,22 +58,6 @@ namespace AbstractBuilder
             return builder;
         }
 
-        public virtual async Task<TResult> BuildAsync(CancellationToken? cancellationToken = null)
-        {
-            var currentCnclTkn = cancellationToken ?? CancellationToken.None;
-
-            TResult obj = await Task.Run(_seedFunc, currentCnclTkn);
-
-            foreach (Action<TResult> action in _modifications.TakeWhile(action => !currentCnclTkn.IsCancellationRequested))
-            {
-                await Task.Run(() => action(obj), currentCnclTkn);
-            }
-
-            currentCnclTkn.ThrowIfCancellationRequested();
-
-            return obj;
-        }
-
         /// <summary>
         /// Attaches new modification(s) in a new builder.
         /// </summary>
@@ -105,6 +89,22 @@ namespace AbstractBuilder
                 next(result);
                 return result;
             });
+        }
+
+        public virtual async Task<TResult> BuildAsync(CancellationToken? cancellationToken = null)
+        {
+            var currentCnclTkn = cancellationToken ?? CancellationToken.None;
+
+            TResult obj = await Task.Run(_seedFunc, currentCnclTkn);
+
+            foreach (Action<TResult> action in _modifications.TakeWhile(action => !currentCnclTkn.IsCancellationRequested))
+            {
+                await Task.Run(() => action(obj), currentCnclTkn);
+            }
+
+            currentCnclTkn.ThrowIfCancellationRequested();
+
+            return obj;
         }
 
         /// <summary>
