@@ -64,13 +64,8 @@ namespace AbstractBuilder
 
             TResult obj = await Task.Run(_seedFunc, currentCnclTkn);
 
-            foreach (Action<TResult> action in _modifications)
+            foreach (Action<TResult> action in _modifications.TakeWhile(action => !currentCnclTkn.IsCancellationRequested))
             {
-                if (currentCnclTkn.IsCancellationRequested)
-                {
-                    break;
-                }
-
                 await Task.Run(() => action(obj), currentCnclTkn);
             }
 
