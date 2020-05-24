@@ -105,14 +105,11 @@ namespace AbstractBuilder
         /// <returns>A new object</returns>
         public virtual TResult Build()
         {
-            TResult obj = _seedFunc.Invoke();
-
-            foreach (Action<TResult> action in _modifications)
+            return _modifications.Aggregate(_seedFunc(), (result, next) =>
             {
-                action.Invoke(obj);
-            }
-
-            return obj;
+                next(result);
+                return result;
+            });
         }
 
         /// <summary>
