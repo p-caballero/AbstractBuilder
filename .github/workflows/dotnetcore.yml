@@ -5,6 +5,7 @@ on:
     branches:
       - master
       - bug/*
+      - feature/*
   pull_request:
     branches: [ master ]
   schedule:
