@@ -269,6 +269,10 @@ dotnet_naming_symbols.symbols_async_methods.applicable_kinds = method
 dotnet_naming_symbols.symbols_async_methods.applicable_accessibilities = *
 dotnet_naming_symbols.symbols_async_methods.required_modifiers = async
 
+dotnet_naming_symbols.symbols_non_public_async_methods.applicable_kinds = method
+dotnet_naming_symbols.symbols_non_public_async_methods.applicable_accessibilities = private, protected, protected_internal, private_protected
+dotnet_naming_symbols.symbols_non_public_async_methods.required_modifiers = async
+
 dotnet_naming_style.style_async_methods.required_suffix = Async
 dotnet_naming_style.style_async_methods.capitalization = pascal_case
 
@@ -281,3 +285,9 @@ dotnet_naming_symbols.symbols_type_parameter.applicable_kinds = type_parameter
 
 dotnet_naming_style.style_type_parameter.capitalization = pascal_case
 dotnet_naming_style.style_type_parameter.required_prefix = T
+
+# .NET Code Style Settings for TEST
+[*Test*.cs]
+
+# Async methods should end with Async suffix (not for public methods, those are the test methos)
+dotnet_naming_rule.rule_async_methods_should_end_suffix.symbols = symbols_non_public_async_methods

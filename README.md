@@ -90,3 +90,41 @@ Yes, we can. We can call multiple times to the lambda action or surround with br
     });
 
 ```
+
+## Asyncronous build
+
+The process is same but with the syncronous method BuildAsync. The cancellation token can be accesible passing the argument of type BuilderContext.
+
+```csharp
+
+    var builderContext = new BuilderContext() { CancellationToken = myCancellationToken };
+
+    var builder = new AbstractBuilder<Person>()
+        .Set((x, ctx) => x.Arms = 2)
+        .Set((x, ctx) => x.Legs = 2);
+
+    Person john = await builder.Set(x => x.Name = "John").BuildAsync(builderContext);
+    Person peter = await builder.Set(x => x.Name = "Peter").BuildAsync(builderContext);
+
+```
+
+## BuilderContext
+
+You can inherit from **BuilderContext** to pass you own arguments if you need them apart form the **CancellationToken**.
+
+When there are more than one constructor in our builder, the priority is for the constructor with the BuilderContext.
+
+You can use indistinctly the different version of the method **Set**, the builder internally converts them into the same operation. If you don't use the version with the context then it will not be accessibe just for that method.
+
+```csharp
+
+    var builderContext = new MyBuilderContext() { Multiplier = 5 };
+
+    var builder = new AbstractBuilder<Person>()
+        .Set((x, ctx) => x.Arms = 2 * ((MyBuilderContext)ctx).Multiplier)
+        .Set(x => x.Legs = 2);
+
+    Person mutantJohn = await builder.Set(x => x.Name = "John").BuildAsync(builderContext);
+    Person mutantPeter = await builder.Set(x => x.Name = "Peter").BuildAsync(builderContext);
+
+```

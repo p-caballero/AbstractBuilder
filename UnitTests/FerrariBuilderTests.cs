@@ -7,8 +7,6 @@ namespace AbstractBuilder
 
     public class FerrariBuilderTests
     {
-        private const string Ferrari208Gts = "FERRARI 208 GTS";
-        private const string Ferrari308Gtbi = "FERRARI 308 GTBI";
         private const int NumDoors = 3;
 
         [Fact]
@@ -63,11 +61,11 @@ namespace AbstractBuilder
 
             // Act
             Car actualFerrari208Gts = builder
-                .WithModel(Ferrari208Gts)
+                .WithModel(FerraryModels.Ferrari208Gts)
                 .Build();
 
             Car actualFerrari308Gtbi = builder
-                .WithModel(Ferrari308Gtbi)
+                .WithModel(FerraryModels.Ferrari308Gtbi)
                 .Build();
 
             // Assert
@@ -80,14 +78,14 @@ namespace AbstractBuilder
             {
                 Color = Color.Red.Name,
                 NumDoors,
-                Model = Ferrari208Gts
+                Model = FerraryModels.Ferrari208Gts
             }.ToExpectedObject().ShouldMatch(actualFerrari208Gts);
 
             new
             {
                 Color = Color.Red.Name,
                 NumDoors,
-                Model = Ferrari308Gtbi
+                Model = FerraryModels.Ferrari308Gtbi
             }.ToExpectedObject().ShouldMatch(actualFerrari308Gtbi);
         }
     }
