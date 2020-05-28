@@ -3,7 +3,7 @@ namespace AbstractBuilder.Sample
     using System;
     using System.Linq;
 
-    internal class BmwBuilder : AbstractBuilder<Car>
+    public class BmwBuilder : AbstractBuilder<Car>
     {
         public const char PetrolSuffix = 'i';
         public const char DieselSuffix = 'd';

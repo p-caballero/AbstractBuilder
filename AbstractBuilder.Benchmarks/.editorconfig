@@ -1,0 +1,9 @@
+# .NET Code Style Settings
+
+[*.cs]
+
+# CA2007: Consider calling ConfigureAwait on the awaited task
+dotnet_diagnostic.CA1707.severity = none
+
+# CA1822: Member FerrariBuilder_MultipleSets_BuildAsync does not access instance data and can be marked as static (Shared in VisualBasic)
+dotnet_diagnostic.CA1822.severity = none

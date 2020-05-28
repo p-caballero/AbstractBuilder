@@ -2,7 +2,7 @@ namespace AbstractBuilder.Sample
 {
     using System;
 
-    internal class FerrariBuilder : AbstractBuilder<Car>
+    public class FerrariBuilder : AbstractBuilder<Car>
     {
         private static int _lastId;
 
