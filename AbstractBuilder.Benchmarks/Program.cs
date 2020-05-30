@@ -4,10 +4,12 @@ namespace AbstractBuilder.Benchmarks
     using System.Threading.Tasks;
     using AbstractBuilder.Sample;
     using BenchmarkDotNet.Attributes;
+    using BenchmarkDotNet.Engines;
     using BenchmarkDotNet.Jobs;
     using BenchmarkDotNet.Running;
 
-    [SimpleJob(RuntimeMoniker.NetCoreApp31)]
+    [SimpleJob(RunStrategy.Throughput, RuntimeMoniker.NetCoreApp31)]
+    [MinColumn, MaxColumn, MeanColumn, MedianColumn]
     public class Test
     {
         [Benchmark]
