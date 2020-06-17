@@ -8,6 +8,8 @@ Just install the NuGet **AbstractBuilder**. It doesn't have any kind of external
 
     dotnet add package AbstractBuilder
 
+Or just go to NuGet web page: https://www.nuget.org/packages/AbstractBuilder/
+
 ## How does it works
 
 We create a default builder and we request modifications to that builder, for every request we have a **new builder** (with all the previous modifications and the new ones). Finally when we call to Build method we create the object.
