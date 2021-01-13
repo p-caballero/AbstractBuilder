@@ -11,7 +11,7 @@
     <PackageProjectUrl>https://github.com/deidigitalis/AbstractBuilder</PackageProjectUrl>
     <RepositoryUrl>https://github.com/deidigitalis/AbstractBuilder</RepositoryUrl>
     <RepositoryType>GIT</RepositoryType>
-    <Copyright>Copyright (c) 2020 Pablo Caballero</Copyright>
+    <Copyright>Copyright (c) 2020-2021 Pablo Caballero</Copyright>
     <AssemblyVersion>1.1.0.0</AssemblyVersion>
     <FileVersion>1.1.0.0</FileVersion>
     <Version>1.1.0</Version>
