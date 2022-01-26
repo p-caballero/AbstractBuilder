@@ -8,13 +8,13 @@
     <PackageLicenseFile>License.txt</PackageLicenseFile>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <PackageProjectUrl>https://github.com/deidigitalis/AbstractBuilder</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/deidigitalis/AbstractBuilder</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/p-caballero/AbstractBuilder</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/p-caballero/AbstractBuilder</RepositoryUrl>
     <RepositoryType>GIT</RepositoryType>
-    <Copyright>Copyright (c) 2020-2021 Pablo Caballero</Copyright>
-    <AssemblyVersion>1.2.0.0</AssemblyVersion>
-    <FileVersion>1.2.0.0</FileVersion>
-    <Version>1.2.0</Version>
+    <Copyright>Copyright (c) 2020-2022 Pablo Caballero</Copyright>
+    <AssemblyVersion>1.3.0.0</AssemblyVersion>
+    <FileVersion>1.3.0.0</FileVersion>
+    <Version>1.3.0</Version>
   </PropertyGroup>
 
   <ItemGroup>
