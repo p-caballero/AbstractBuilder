@@ -8,8 +8,6 @@ on:
       - feature/*
   pull_request:
     branches: [ master ]
-  schedule:
-    - cron: "0 8 * * 1"
 
 jobs:
   build:
@@ -18,10 +16,10 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: Setup .NET 5
+    - name: Setup .NET 6
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 5.0.102
+        dotnet-version: 6.0.x
     - name: Install dependencies
       run: dotnet restore
     - name: Build
