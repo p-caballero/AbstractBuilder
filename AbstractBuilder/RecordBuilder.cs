@@ -5,6 +5,7 @@ namespace AbstractBuilder
     using System.Linq;
     using System.Linq.Expressions;
     using System.Reflection;
+    using AbstractBuilder.Internal;
 
     public class RecordBuilder<TResult>
     {

@@ -1,4 +1,4 @@
-namespace AbstractBuilder
+namespace AbstractBuilder.Internal
 {
     internal static class CtorConstants
     {
