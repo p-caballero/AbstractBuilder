@@ -33,8 +33,14 @@ namespace AbstractBuilder
         public TBuilder Set<TBuilder>(Expression<Func<TResult, object>> selector, Func<object> parameterBuilder)
             where TBuilder : RecordBuilder<TResult>
         {
+            if (selector == null)
+            {
+                throw new ArgumentNullException(nameof(selector));
+            }
+
             var propertyInfo = (PropertyInfo)((MemberExpression)selector.Body).Member;
-            return Set<TBuilder>(propertyInfo.Name, () => parameterBuilder.Invoke());
+
+            return Set<TBuilder>(propertyInfo.Name, parameterBuilder);
         }
 
         /// <summary>
@@ -49,7 +55,18 @@ namespace AbstractBuilder
         public TBuilder Set<TBuilder, TParameter>(Expression<Func<TResult, TParameter>> selector, Func<TParameter> parameterBuilder)
             where TBuilder : RecordBuilder<TResult>
         {
+            if (selector == null)
+            {
+                throw new ArgumentNullException(nameof(selector));
+            }
+
+            if (parameterBuilder == null)
+            {
+                throw new ArgumentNullException(nameof(parameterBuilder));
+            }
+
             var propertyInfo = (PropertyInfo)((MemberExpression)selector.Body).Member;
+
             return Set<TBuilder>(propertyInfo.Name, () => parameterBuilder.Invoke());
         }
 
@@ -64,6 +81,16 @@ namespace AbstractBuilder
         public TBuilder Set<TBuilder>(string parameterName, Func<object> parameterBuilder)
             where TBuilder : RecordBuilder<TResult>
         {
+            if (string.IsNullOrWhiteSpace(parameterName))
+            {
+                throw new ArgumentException($"Invalid parameter name {parameterName}.", nameof(parameterName));
+            }
+
+            if (parameterBuilder == null)
+            {
+                throw new ArgumentNullException(nameof(parameterBuilder));
+            }
+
             if (!IsSupported<TBuilder>())
             {
                 throw new NotSupportedException();
@@ -74,15 +101,7 @@ namespace AbstractBuilder
                 throw new MissingFieldException(typeof(TResult).Name, parameterName);
             }
 
-            RecordBuilder<TResult> builder = CreateBuilder();
-
-            foreach (var propBuilders in _propertyBuilders.Where(x => x.Key != parameterName))
-            {
-                builder._propertyBuilders.Add(propBuilders.Key, propBuilders.Value);
-            }
-            builder._propertyBuilders.Add(parameterName, () => parameterBuilder.Invoke());
-
-            return (TBuilder)builder;
+            return InternalSet<TBuilder>(parameterName, parameterBuilder);
         }
 
         /// <summary>
@@ -161,6 +180,28 @@ namespace AbstractBuilder
         private static bool ExistParameter(string name)
         {
             return typeof(TResult).GetConstructors().FirstOrDefault()?.GetParameters().Any(p => p.Name == name) ?? false;
+        }
+
+        /// <summary>
+        /// Attaches new parameter construction in a new director.
+        /// </summary>
+        /// <remarks>This method doesn't check the arguments.</remarks>
+        /// <typeparam name="TBuilder">Type of the target builder</typeparam>
+        /// <param name="parameterName"></param>
+        /// <param name="parameterBuilder"></param>
+        /// <returns>An incremental new director</returns>
+        private TBuilder InternalSet<TBuilder>(string parameterName, Func<object> parameterBuilder)
+            where TBuilder : RecordBuilder<TResult>
+        {
+            RecordBuilder<TResult> builder = CreateBuilder();
+
+            foreach (var propBuilders in _propertyBuilders.Where(x => x.Key != parameterName))
+            {
+                builder._propertyBuilders.Add(propBuilders.Key, propBuilders.Value);
+            }
+            builder._propertyBuilders.Add(parameterName, () => parameterBuilder.Invoke());
+
+            return (TBuilder)builder;
         }
     }
 }
