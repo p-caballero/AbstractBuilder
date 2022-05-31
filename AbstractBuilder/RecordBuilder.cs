@@ -58,24 +58,31 @@ namespace AbstractBuilder
             ConstructorInfo ctor = typeof(TResult).GetConstructors().FirstOrDefault()
                 ?? throw new MissingMethodException(typeof(TResult).Name, CtorConstants.MethodName);
 
-            var parameters = new List<object>();
-            foreach (var parameter in ctor.GetParameters())
-            {
-                if (_propertyBuilders.TryGetValue(parameter.Name, out Func<object> propertyBuilder))
-                {
-                    parameters.Add(propertyBuilder.Invoke());
-                }
-                else if (parameter.HasDefaultValue)
-                {
-                    parameters.Add(parameter.DefaultValue);
-                }
-                else
-                {
-                    parameters.Add(CreateDefaultValue(parameter.ParameterType));
-                }
-            }
+            var parameters = ctor.GetParameters()
+                .Select(p => BuildParameter(p))
+                .ToArray();
 
             return (TResult)ctor.Invoke(parameters.ToArray());
+        }
+
+        private object BuildParameter(ParameterInfo parameter)
+        {
+            if (_propertyBuilders.TryGetValue(parameter.Name, out Func<object> propertyBuilder))
+            {
+                return propertyBuilder.Invoke();
+            }
+            else if (parameter.HasDefaultValue)
+            {
+                return parameter.DefaultValue;
+            }
+            else if (parameter.ParameterType.IsClass)
+            {
+                return null;
+            }
+            else
+            {
+                return Activator.CreateInstance(parameter.ParameterType);
+            }
         }
 
         private RecordBuilder<TResult> CreateBuilder()
@@ -86,11 +93,6 @@ namespace AbstractBuilder
                 ?? throw new MissingMethodException(GetType().Name, CtorConstants.MethodName);
 
             return (RecordBuilder<TResult>)ctor.Invoke(new object[0]);
-        }
-
-        private object CreateDefaultValue(Type type)
-        {
-            return type.IsClass ? null : Activator.CreateInstance(type);
         }
 
         /// <summary>
