@@ -5,13 +5,10 @@ namespace AbstractBuilder
     using System.Linq;
     using System.Reflection;
     using System.Threading.Tasks;
+    using AbstractBuilder.Internal;
 
     public class AbstractBuilder<TResult>
     {
-        private const string CtorMethodName = ".ctor";
-
-        private const BindingFlags CtorBindingFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
-
         private readonly Func<BuilderContext, TResult> _seedFunc;
 
         private readonly Queue<Action<TResult, BuilderContext>> _modifications;
@@ -166,15 +163,15 @@ namespace AbstractBuilder
         {
             var type = GetType();
 
-            ConstructorInfo ctor = type.GetConstructor(CtorBindingFlags, null, new[] { typeof(Func<BuilderContext, TResult>) }, null);
+            ConstructorInfo ctor = type.GetConstructor(CtorConstants.BindingFlags, null, new[] { typeof(Func<BuilderContext, TResult>) }, null);
 
             if (ctor != null)
             {
                 return (AbstractBuilder<TResult>)ctor.Invoke(new object[] { _seedFunc });
             }
 
-            ctor = type.GetConstructor(CtorBindingFlags, null, new[] { typeof(Func<TResult>) }, null)
-                   ?? throw new MissingMethodException(GetType().Name, CtorMethodName);
+            ctor = type.GetConstructor(CtorConstants.BindingFlags, null, new[] { typeof(Func<TResult>) }, null)
+                   ?? throw new MissingMethodException(GetType().Name, CtorConstants.MethodName);
 
             TResult SeedFuncWithoutCancellation() => _seedFunc(null);
 
