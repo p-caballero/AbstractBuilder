@@ -14,5 +14,10 @@ namespace AbstractBuilder.Examples.Builders
         {
             return Set<BookCiteBuilder, string>(x => x.Author, () => $"{lastName}, {firstName[..1].ToUpperInvariant()}. {midName[..1].ToUpperInvariant()}.");
         }
+
+        public BookCiteBuilder WithAuthorReducedVersion(string firstName, string lastName)
+        {
+            return Set<BookCiteBuilder>(x => x.Author, () => $"{lastName}, {firstName[..1].ToUpperInvariant()}.");
+        }
     }
 }

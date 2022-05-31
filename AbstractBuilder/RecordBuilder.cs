@@ -15,7 +15,21 @@ namespace AbstractBuilder
         {
         }
 
+        public TBuilder Set<TBuilder>(Expression<Func<TResult, object>> selector, Func<object> propertyBuilder)
+            where TBuilder : RecordBuilder<TResult>
+        {
+            var propertyInfo = (PropertyInfo)((MemberExpression)selector.Body).Member;
+            return Set<TBuilder>(propertyInfo.Name, () => propertyBuilder.Invoke());
+        }
+
         public TBuilder Set<TBuilder, TProperty>(Expression<Func<TResult, TProperty>> selector, Func<TProperty> propertyBuilder)
+            where TBuilder : RecordBuilder<TResult>
+        {
+            var propertyInfo = (PropertyInfo)((MemberExpression)selector.Body).Member;
+            return Set<TBuilder>(propertyInfo.Name, () => propertyBuilder.Invoke());
+        }
+
+        public TBuilder Set<TBuilder>(string propertyName, Func<object> propertyBuilder)
             where TBuilder : RecordBuilder<TResult>
         {
             if (!IsSupported<TBuilder>())
@@ -23,9 +37,10 @@ namespace AbstractBuilder
                 throw new NotSupportedException();
             }
 
-            var propertyInfo = (PropertyInfo)((MemberExpression)selector.Body).Member;
-
-            string propertyName = propertyInfo.Name;
+            if (!ExistParameter(propertyName))
+            {
+                throw new MissingFieldException(typeof(TResult).Name, propertyName);
+            }
 
             RecordBuilder<TResult> builder = CreateBuilder();
 
@@ -36,16 +51,6 @@ namespace AbstractBuilder
             builder._propertyBuilders.Add(propertyName, () => propertyBuilder.Invoke());
 
             return (TBuilder)builder;
-        }
-
-        private RecordBuilder<TResult> CreateBuilder()
-        {
-            var type = GetType();
-
-            ConstructorInfo ctor = type.GetConstructor(CtorConstants.BindingFlags, null, new Type[0], null)
-                ?? throw new MissingMethodException(GetType().Name, CtorConstants.MethodName);
-
-            return (RecordBuilder<TResult>)ctor.Invoke(new object[0]);
         }
 
         public TResult Build()
@@ -73,6 +78,16 @@ namespace AbstractBuilder
             return (TResult)ctor.Invoke(parameters.ToArray());
         }
 
+        private RecordBuilder<TResult> CreateBuilder()
+        {
+            var type = GetType();
+
+            ConstructorInfo ctor = type.GetConstructor(CtorConstants.BindingFlags, null, new Type[0], null)
+                ?? throw new MissingMethodException(GetType().Name, CtorConstants.MethodName);
+
+            return (RecordBuilder<TResult>)ctor.Invoke(new object[0]);
+        }
+
         private object CreateDefaultValue(Type type)
         {
             return type.IsClass ? null : Activator.CreateInstance(type);
@@ -88,6 +103,11 @@ namespace AbstractBuilder
             Type resultType = typeof(TBuilder);
             Type currentType = GetType();
             return resultType == currentType || resultType.IsInstanceOfType(currentType);
+        }
+
+        private static bool ExistParameter(string name)
+        {
+            return typeof(TResult).GetConstructors().FirstOrDefault()?.GetParameters().Any(p => p.Name == name) ?? false;
         }
     }
 }

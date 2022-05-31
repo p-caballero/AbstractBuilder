@@ -27,5 +27,26 @@ namespace AbstractBuilder
                 Publisher = (string)null,
             }.ToExpectedObject().ShouldMatch(actual);
         }
+
+        [Fact]
+        public void Build_WithAuthorReducedVersion_CreatesCite()
+        {
+            // Arrange
+            BookCiteBuilder builder = new BookCiteBuilder()
+                .WithAuthorReducedVersion("Arthur", "Conan Doyle");
+
+            // Act
+            BookCite actual = builder.Build();
+
+            // Assert
+            Assert.NotNull(actual);
+
+            new
+            {
+                Title = (string)null,
+                Author = "Conan Doyle, A.",
+                Publisher = (string)null,
+            }.ToExpectedObject().ShouldMatch(actual);
+        }
     }
 }
