@@ -1,7 +1,8 @@
 namespace AbstractBuilder
 {
     using System.Drawing;
-    using AbstractBuilder.Sample;
+    using AbstractBuilder.Examples.Builders;
+    using AbstractBuilder.Examples.Entities;
     using ExpectedObjects;
     using Xunit;
 

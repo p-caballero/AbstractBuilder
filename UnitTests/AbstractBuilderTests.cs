@@ -5,10 +5,11 @@ namespace AbstractBuilder
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
-    using AbstractBuilder.Sample;
+    using AbstractBuilder.Examples.Builders;
+    using AbstractBuilder.Examples.Entities;
     using ExpectedObjects;
     using Xunit;
-    using CtrType = Sample.BuilderWithBothCtors.CtrType;
+    using CtrType = Examples.Builders.BuilderWithBothCtors.CtrType;
 
     public class AbstractBuilderTests
     {

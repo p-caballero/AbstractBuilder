@@ -1,6 +1,8 @@
-namespace AbstractBuilder.Sample
+namespace AbstractBuilder.Examples.Builders
 {
     using System;
+    using AbstractBuilder;
+    using AbstractBuilder.Examples.Entities;
 
     public class WebBookCiteBuilder : RecordBuilder<WebBookCite>
     {
