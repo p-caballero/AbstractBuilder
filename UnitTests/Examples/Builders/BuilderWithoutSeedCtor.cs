@@ -1,7 +1,7 @@
-using AbstractBuilder.Examples.Entities;
-
 namespace AbstractBuilder.Examples.Builders
 {
+    using AbstractBuilder.Examples.Entities;
+
     internal class BuilderWithoutSeedCtor : AbstractBuilder<Car>
     {
         public BuilderWithoutSeedCtor()

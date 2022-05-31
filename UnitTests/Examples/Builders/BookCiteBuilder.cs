@@ -3,7 +3,7 @@ namespace AbstractBuilder.Examples.Builders
     using AbstractBuilder;
     using AbstractBuilder.Examples.Entities;
 
-    public class BookCiteBuilder : RecordBuilder<BookCite>
+    internal class BookCiteBuilder : RecordBuilder<BookCite>
     {
         public BookCiteBuilder WithAuthor(string firstName, string lastName)
         {

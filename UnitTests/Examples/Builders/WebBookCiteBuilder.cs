@@ -4,7 +4,7 @@ namespace AbstractBuilder.Examples.Builders
     using AbstractBuilder;
     using AbstractBuilder.Examples.Entities;
 
-    public class WebBookCiteBuilder : RecordBuilder<WebBookCite>
+    internal class WebBookCiteBuilder : RecordBuilder<WebBookCite>
     {
         public WebBookCiteBuilder WithCite()
         {

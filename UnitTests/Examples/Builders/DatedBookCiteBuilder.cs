@@ -3,7 +3,7 @@ namespace AbstractBuilder.Examples.Builders
     using AbstractBuilder;
     using AbstractBuilder.Examples.Entities;
 
-    public class DatedBookCiteBuilder : RecordBuilder<DatedBookCite>
+    internal class DatedBookCiteBuilder : RecordBuilder<DatedBookCite>
     {
         public DatedBookCiteBuilder WithYear()
         {
