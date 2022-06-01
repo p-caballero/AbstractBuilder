@@ -40,8 +40,8 @@ You just have to inherit from **AbstractBuilder** class where the generic type i
         {
         }
 
-        // MANDATORY CONSTRUCTOR
-        protected MyBuilder(Func<Person> seedFunc) : base(seedFunc)
+        // MANDATORY CONSTRUCTOR (it can be private or protected)
+        private MyBuilder(Func<Person> seedFunc) : base(seedFunc)
         {
         }
 
@@ -133,7 +133,7 @@ You can use indistinctly the different version of the method **Set**, the builde
 
 ## Builder for records
 
-[Records](https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/record) cannot follow this genenic patter due to the properties are read-only after the creation o fthe object. If you want to follow a similar approach we should us `RecordBuilder`.
+[Records](https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/record) cannot follow this genenic builder pattern due to the properties are read-only after the creation of the object. If you want to follow a similar approach you should use `RecordBuilder`.
 
 ```csharp
     public record Point(double X, double Y, double Z); 
@@ -149,9 +149,9 @@ You can use indistinctly the different version of the method **Set**, the builde
 
 ```
 
-Using the method `Set` we can add the value for the selected parameter. If you don't provide a value then it will try to use the default value of that parameter and in the worst case the default value for that type.
+Using the method `Set` we can add the value for the selected parameter. If you don't provide a value then it will try to use the default value of that parameter and in the worst case, the default value for that type.
 
-We suppose Point could be a record class or a record struct.
+This builder works with **record class** and **record struct**.
 
 ```csharp
 
