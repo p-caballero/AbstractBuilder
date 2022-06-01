@@ -138,7 +138,7 @@ You can use indistinctly the different version of the method **Set**, the builde
 ```csharp
     public record Point(double X, double Y, double Z); 
 
-    public PointBuilder : AbstractBuilder<Person>
+    public PointBuilder : RecordBuilder<Point>
     {
         public PointBuilder WithCoordinateAlpha()
         {
@@ -159,8 +159,8 @@ This builder works with **record class** and **record struct**.
         .WithCoordinateAlpha();
 
     Point alpha = builder.Build();
-    Point beta = builder.Set(x => x.Z = 10).Build();
-    Point charlie = builder.Set(x => x.Z = 20).Build();
+    Point beta = builder.Set<PointBuilder>(x => x.Z, () => 10).Build();
+    Point charlie = builder.Set<PointBuilder>(x => x.Z, () => 20).Build();
 
 ```
 
