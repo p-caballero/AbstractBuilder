@@ -13,7 +13,7 @@ namespace AbstractBuilder
     /// <typeparam name="TResult">Type of the result of this builder</typeparam>
     public class RecordBuilder<TResult>
     {
-        private readonly IDictionary<string, Func<object>> _propertyBuilders = new Dictionary<string, Func<object>>();
+        private readonly IDictionary<string, Func<object>> _parameterBuilders = new Dictionary<string, Func<object>>();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RecordBuilder{TResult}"/> class.
@@ -128,7 +128,7 @@ namespace AbstractBuilder
         /// <returns>The value of the parameter for the new object</returns>
         private object BuildParameter(ParameterInfo parameter)
         {
-            if (_propertyBuilders.TryGetValue(parameter.Name, out Func<object> parameterBuilder))
+            if (_parameterBuilders.TryGetValue(parameter.Name, out Func<object> parameterBuilder))
             {
                 return parameterBuilder.Invoke();
             }
@@ -195,11 +195,11 @@ namespace AbstractBuilder
         {
             RecordBuilder<TResult> builder = CreateBuilder();
 
-            foreach (var propBuilders in _propertyBuilders.Where(x => x.Key != parameterName))
+            foreach (var propBuilders in _parameterBuilders.Where(x => x.Key != parameterName))
             {
-                builder._propertyBuilders.Add(propBuilders.Key, propBuilders.Value);
+                builder._parameterBuilders.Add(propBuilders.Key, propBuilders.Value);
             }
-            builder._propertyBuilders.Add(parameterName, () => parameterBuilder.Invoke());
+            builder._parameterBuilders.Add(parameterName, () => parameterBuilder.Invoke());
 
             return (TBuilder)builder;
         }
