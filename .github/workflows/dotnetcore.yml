@@ -25,12 +25,4 @@ jobs:
     - name: Build
       run: dotnet build --configuration Release --no-restore
     - name: Test
-      run: dotnet test --no-restore --verbosity normal --collect:"XPlat Code Coverage"
-    - name: Coverage
-      uses: b3b00/coverlet-action@1.1.9
-      with:
-        testProject: 'UnitTests/UnitTests.csproj'
-        output: 'lcov.info'
-        outputFormat: 'lcov'
-        excludes: '[program]*,[test]test.*'
-        threshold: 80
+      run: dotnet test --no-restore --verbosity normal
