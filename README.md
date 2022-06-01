@@ -40,8 +40,8 @@ You just have to inherit from **AbstractBuilder** class where the generic type i
         {
         }
 
-        // MANDATORY CONSTRUCTOR
-        protected MyBuilder(Func<Person> seedFunc) : base(seedFunc)
+        // MANDATORY CONSTRUCTOR (it can be private or protected)
+        private MyBuilder(Func<Person> seedFunc) : base(seedFunc)
         {
         }
 
@@ -130,3 +130,38 @@ You can use indistinctly the different version of the method **Set**, the builde
     Person mutantPeter = await builder.Set(x => x.Name = "Peter").BuildAsync(builderContext);
 
 ```
+
+## Builder for records
+
+[Records](https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/record) cannot follow this genenic builder pattern due to the properties are read-only after the creation of the object. If you want to follow a similar approach you should use `RecordBuilder`.
+
+```csharp
+    public record Point(double X, double Y, double Z); 
+
+    public PointBuilder : RecordBuilder<Point>
+    {
+        public PointBuilder WithCoordinateAlpha()
+        {
+            return Set<PointBuilder>(p => p.X, () => 10)
+                  .Set<PointBuilder>(p => p.Y, () => 20);
+        }
+    }
+
+```
+
+Using the method `Set` we can add the value for the selected parameter. If you don't provide a value then it will try to use the default value of that parameter and in the worst case, the default value for that type.
+
+This builder works with **record class** and **record struct**.
+
+```csharp
+
+    var builder = new PointBuilder()
+        .WithCoordinateAlpha();
+
+    Point alpha = builder.Build();
+    Point beta = builder.Set<PointBuilder>(x => x.Z, () => 10).Build();
+    Point charlie = builder.Set<PointBuilder>(x => x.Z, () => 20).Build();
+
+```
+
+In the previous example, alpha was _(10,20,0)_, beta was _(10,20,10)_ and charlie was _(10,20,20)_.
