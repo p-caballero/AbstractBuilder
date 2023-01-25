@@ -38,7 +38,20 @@ namespace AbstractBuilder
                 throw new ArgumentNullException(nameof(selector));
             }
 
-            var propertyInfo = (PropertyInfo)((MemberExpression)selector.Body).Member;
+            PropertyInfo propertyInfo;
+
+            if (selector.Body is MemberExpression)
+            {
+                propertyInfo = (PropertyInfo)((MemberExpression)selector.Body).Member;
+            }
+            else if (selector.Body is UnaryExpression)
+            {
+                var operand = ((UnaryExpression)selector.Body).Operand;
+                propertyInfo = (PropertyInfo)((MemberExpression)operand).Member;
+            } else
+            {
+                throw new NotSupportedException();
+            }
 
             return Set<TBuilder>(propertyInfo.Name, parameterBuilder);
         }
