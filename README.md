@@ -1,18 +1,18 @@
 # AbstractBuilder
 
-NuGet that contains a builder pattern for testing in C#
+A NuGet package that contains a builder pattern for testing in C#.
 
 ## How to add it
 
-Just install the NuGet **AbstractBuilder**. It doesn't have any kind of external dependencies.
+To use this package, simply install the NuGet **AbstractBuilder**. It has no external dependencies.
 
     dotnet add package AbstractBuilder
 
-Or just go to NuGet web page: https://www.nuget.org/packages/AbstractBuilder/
+Alternatively, you can visit the NuGet webpage for **AbstractBuilder**: https://www.nuget.org/packages/AbstractBuilder/.
 
 ## How does it works
 
-We create a default builder and we request modifications to that builder, for every request we have a **new builder** (with all the previous modifications and the new ones). Finally when we call to Build method we create the object.
+We start with a default builder and modify it as needed. Each modification creates a **new builder** that inherits the previous changes. When we call the `Build` method, we create the object.
 
 ```csharp
 
@@ -25,11 +25,11 @@ We create a default builder and we request modifications to that builder, for ev
 
 ```
 
-In the previous example we share 2 modifications and we create 2 instances of the class `Person`.
+In the previous example, we make two changes and create two `Person` objects.
 
 ## How can I use it? - Way 1: Heritage
 
-You just have to inherit from **AbstractBuilder** class where the generic type is the result. The build steps can be as simple as this example or as complex as you want.
+To use the `AbstractBuilder` class, you need to inherit from it and specify the generic type as the result. The build steps can vary in complexity, as shown in this example.
 
 ```csharp
 
@@ -60,12 +60,11 @@ You just have to inherit from **AbstractBuilder** class where the generic type i
 
 ```
 
-Your builder needs a public constructor (in the example it is the default constructor) and it always needs a constructor with the seed (the visibility is not important).
-In this example we can set the property "*Name*" with the method `WithName`. We way of creating new methods that affects to the builder should be using always the method `Set`.
+Your builder requires a public constructor (the default constructor in the example) and another constructor with the seed (the visibility does not matter). In this example, we can set the "*Name*" property with the `WithName` method. We should always use the `Set<>` method to create new methods that modify the builder.
 
 ## How can I use it? - Way 2: Using the abstract builder itself
 
-I don't want to be restrictive so you can use it directly. The problem is that you will have to declare everything and you will not reuse the builder.
+You can use it directly without any restrictions. However, you will need to declare everything and you cannot reuse the builder.
 
 ```csharp
 
@@ -80,7 +79,7 @@ I don't want to be restrictive so you can use it directly. The problem is that y
 
 ## Could we aggregate some modifications in one call?
 
-Yes, we can. We can call multiple times to the lambda action or surround with brackets.
+We can do either of these: call the lambda action multiple times or use brackets.
 
 ```csharp
 
@@ -95,7 +94,7 @@ Yes, we can. We can call multiple times to the lambda action or surround with br
 
 ## Asyncronous build
 
-The process is same but with the syncronous method BuildAsync. The cancellation token can be accesible passing the argument of type BuilderContext.
+The process is the same, but with the synchronous method `BuildAsync`. The cancellation token can be accessed by passing an argument of type `BuilderContext`.
 
 ```csharp
 
@@ -112,11 +111,11 @@ The process is same but with the syncronous method BuildAsync. The cancellation 
 
 ## BuilderContext
 
-You can inherit from **BuilderContext** to pass you own arguments if you need them apart form the **CancellationToken**.
+You can inherit from `BuilderContext` to pass your own arguments, besides the `CancellationToken`, if you need them.
 
-When there are more than one constructor in our builder, the priority is for the constructor with the BuilderContext.
+If your builder has multiple constructors, the one with the `BuilderContext` parameter has the highest priority.
 
-You can use indistinctly the different version of the method **Set**, the builder internally converts them into the same operation. If you don't use the version with the context then it will not be accessibe just for that method.
+You can use any version of the `Set` method interchangeably, as the builder internally converts them to the same operation. However, if you omit the context parameter, you will not be able to access it for that method.
 
 ```csharp
 
@@ -133,7 +132,7 @@ You can use indistinctly the different version of the method **Set**, the builde
 
 ## Builder for records
 
-[Records](https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/record) cannot follow this genenic builder pattern due to the properties are read-only after the creation of the object. If you want to follow a similar approach you should use `RecordBuilder`.
+[Records](https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/record) cannot use this generic builder pattern because their properties are read-only after the object is created. To achieve a similar result, you should use `RecordBuilder`.
 
 ```csharp
     public record Point(double X, double Y, double Z); 
@@ -149,9 +148,9 @@ You can use indistinctly the different version of the method **Set**, the builde
 
 ```
 
-Using the method `Set` we can add the value for the selected parameter. If you don't provide a value then it will try to use the default value of that parameter and in the worst case, the default value for that type.
+The `Set` method assigns a value to the chosen parameter. If no value is given, it uses the default value of the parameter or in the worst case, the default value of the type.
 
-This builder works with **record class** and **record struct**.
+This builder supports both record class and record struct.
 
 ```csharp
 
@@ -165,3 +164,7 @@ This builder works with **record class** and **record struct**.
 ```
 
 In the previous example, alpha was _(10,20,0)_, beta was _(10,20,10)_ and charlie was _(10,20,20)_.
+
+---
+
+**_Enjoy t3st1ng!_**
