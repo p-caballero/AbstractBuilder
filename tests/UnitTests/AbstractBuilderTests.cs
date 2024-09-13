@@ -171,16 +171,23 @@ namespace AbstractBuilder
         }
 
         [Fact]
-        public void Set_BuilderWithoutSeedCtor_ThrowsMissingMethodException()
+        public void Set_BuilderWithoutSeedCtor_UsesDefaultConstructorWithLambdaCreation()
         {
             // Arrange
             var builder = new BuilderWithoutSeedCtor();
 
             // Act & Assert
-            Assert.Throws<MissingMethodException>(() =>
+            var actual = builder.Set(x => x.NumDoors = 5)
+                .Build();
+
+            // Assert
+            Assert.Equivalent(new
             {
-                builder.Set(x => x.NumDoors = 5);
-            });
+                Id = 0,
+                Model = Car.DefaultModel,
+                NumDoors = 5,
+                Color = Car.DefaultColor
+            }, actual);
         }
 
         [Fact]

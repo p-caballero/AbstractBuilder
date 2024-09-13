@@ -1,8 +1,6 @@
 namespace AbstractBuilder.Examples.Entities
 {
-    using System;
-
-    internal class Car
+    public class Car
     {
         public const string DefaultModel = "UNKNOW MODEL";
 
