@@ -20,15 +20,19 @@ namespace AbstractBuilder
         /// <summary>
         /// Initializes a new instance of the <see cref="AbstractBuilder{TResult}"/> class.
         /// </summary>
+        /// <remarks>Default constructor.</remarks>
         /// <param name="seedFunc">Method to create a new instance</param>
-        public AbstractBuilder(Func<TResult> seedFunc)
+        public AbstractBuilder(Func<TResult> seedFunc = null)
         {
             if (seedFunc == null)
             {
-                throw new ArgumentNullException(nameof(seedFunc));
+                _seedFunc = _ => CreateDefault();
+            }
+            else
+            {
+                _seedFunc = _ => seedFunc();
             }
 
-            _seedFunc = _ => seedFunc();
             _modifications = new Queue<Action<TResult, BuilderContext>>();
         }
 
@@ -149,7 +153,7 @@ namespace AbstractBuilder
         {
             var currBuilderContext = builderContext ?? new BuilderContext();
             var cancelTkn = currBuilderContext.CancellationToken;
-            
+
             cancelTkn.ThrowIfCancellationRequested();
             TResult obj = await Task.Run(() => _seedFunc(currBuilderContext), cancelTkn);
 
@@ -162,23 +166,91 @@ namespace AbstractBuilder
             return obj;
         }
 
+        /// <summary>
+        /// Creates an instance of <see cref="AbstractBuilder{TResult}"/> using various constructor strategies.
+        /// </summary>
+        /// <returns>An instance of <see cref="AbstractBuilder{TResult}"/>.</returns>
+        /// <exception cref="MissingMethodException">Thrown when no suitable constructor is found.</exception>
         private AbstractBuilder<TResult> CreateBuilder()
         {
-            var type = GetType();
+            if (TryCreateBuilderWithBuilderContext(out AbstractBuilder<TResult> result))
+            {
+                return result;
+            }
 
-            ConstructorInfo ctor = type.GetConstructor(CtorConstants.BindingFlags, null, new[] { typeof(Func<BuilderContext, TResult>) }, null);
+            if (TryCreateBuilderWithFunction(out result))
+            {
+                return result;
+            }
+
+            if (TryCreateBuilderWithDefaultCtor(out result))
+            {
+                return result;
+            }
+
+            throw new MissingMethodException(GetType().Name, CtorConstants.MethodName);
+        }
+
+        /// <summary>
+        /// Attempts to create an instance of <see cref="AbstractBuilder{TResult}"/> using a constructor that accepts a <see cref="Func{BuilderContext, TResult}"/>.
+        /// </summary>
+        /// <param name="type">The type of the builder.</param>
+        /// <param name="result">The created builder instance, if successful.</param>
+        /// <returns><c>true</c> if the builder was successfully created; otherwise, <c>false</c>.</returns>
+        private bool TryCreateBuilderWithBuilderContext(out AbstractBuilder<TResult> result)
+        {
+            ConstructorInfo ctor = GetType().GetConstructor(CtorConstants.BindingFlags, null, new[] { typeof(Func<BuilderContext, TResult>) }, null);
 
             if (ctor != null)
             {
-                return (AbstractBuilder<TResult>)ctor.Invoke(new object[] { _seedFunc });
+                result = (AbstractBuilder<TResult>)ctor.Invoke(new object[] { _seedFunc });
+                return true;
             }
 
-            ctor = type.GetConstructor(CtorConstants.BindingFlags, null, new[] { typeof(Func<TResult>) }, null)
-                   ?? throw new MissingMethodException(GetType().Name, CtorConstants.MethodName);
+            result = null;
+            return false;
+        }
 
-            TResult SeedFuncWithoutCancellation() => _seedFunc(null);
+        /// <summary>
+        /// Attempts to create an instance of <see cref="AbstractBuilder{TResult}"/> using a constructor that accepts a <see cref="Func{TResult}"/>.
+        /// </summary>
+        /// <param name="type">The type of the builder.</param>
+        /// <param name="result">The created builder instance, if successful.</param>
+        /// <returns><c>true</c> if the builder was successfully created; otherwise, <c>false</c>.</returns>
+        private bool TryCreateBuilderWithFunction(out AbstractBuilder<TResult> result)
+        {
+            ConstructorInfo ctor = GetType().GetConstructor(CtorConstants.BindingFlags, null, new[] { typeof(Func<TResult>) }, null);
 
-            return (AbstractBuilder<TResult>)ctor.Invoke(new object[] { (Func<TResult>)SeedFuncWithoutCancellation });
+            if (ctor != null)
+            {
+                TResult SeedFuncWithoutCancellation() => _seedFunc(null);
+
+                result = (AbstractBuilder<TResult>)ctor.Invoke(new object[] { (Func<TResult>)SeedFuncWithoutCancellation });
+                return true;
+            }
+
+            result = null;
+            return false;
+        }
+
+        /// <summary>
+        /// Attempts to create an instance of <see cref="AbstractBuilder{TResult}"/> using a parameterless constructor.
+        /// </summary>
+        /// <param name="type">The type of the builder.</param>
+        /// <param name="result">The created builder instance, if successful.</param>
+        /// <returns><c>true</c> if the builder was successfully created; otherwise, <c>false</c>.</returns>
+        private bool TryCreateBuilderWithDefaultCtor(out AbstractBuilder<TResult> result)
+        {
+            ConstructorInfo ctor = GetType().GetConstructor(CtorConstants.BindingFlags, null, Type.EmptyTypes, null);
+
+            if (ctor != null)
+            {
+                result = (AbstractBuilder<TResult>)ctor.Invoke(null);
+                return true;
+            }
+
+            result = null;
+            return false;
         }
 
         /// <summary>
@@ -191,6 +263,15 @@ namespace AbstractBuilder
             Type resultType = typeof(TBuilder);
             Type currentType = GetType();
             return resultType == currentType || resultType.IsInstanceOfType(currentType);
+        }
+
+        /// <summary>
+        /// Creates a default instance of <see cref="TResult"/>.
+        /// </summary>
+        /// <remarks>It is not used when a seed function is provided.</remarks>
+        protected virtual TResult CreateDefault()
+        {
+            return default;
         }
     }
 }
